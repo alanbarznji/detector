@@ -1,0 +1,43 @@
+import React, { ReactNode } from 'react';
+import clsx from 'clsx';
+
+interface BadgeProps {
+  children: ReactNode;
+  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
+  size?: 'sm' | 'md' | 'lg';
+  className?: string;
+}
+
+export const Badge: React.FC<BadgeProps> = ({
+  children,
+  variant = 'default',
+  size = 'md',
+  className,
+}) => {
+  const variantClasses = {
+    default: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+    success: 'bg-success-100 text-success-800 dark:bg-success-900/30 dark:text-success-400',
+    warning: 'bg-warning-100 text-warning-800 dark:bg-warning-900/30 dark:text-warning-400',
+    danger: 'bg-danger-100 text-danger-800 dark:bg-danger-900/30 dark:text-danger-400',
+    info: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  };
+
+  const sizeClasses = {
+    sm: 'px-2 py-0.5 text-xs',
+    md: 'px-2.5 py-1 text-sm',
+    lg: 'px-3 py-1.5 text-base',
+  };
+
+  return (
+    <span
+      className={clsx(
+        'inline-flex items-center font-medium rounded-full',
+        variantClasses[variant],
+        sizeClasses[size],
+        className
+      )}
+    >
+      {children}
+    </span>
+  );
+};
