@@ -1,14 +1,7 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 
-interface CardProps {
-  children: ReactNode;
-  className?: string;
-  padding?: 'none' | 'sm' | 'md' | 'lg';
-  hover?: boolean;
-}
-
-export const Card: React.FC<CardProps> = ({
+export const Card = ({
   children,
   className,
   padding = 'md',

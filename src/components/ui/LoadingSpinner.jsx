@@ -1,12 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 
-interface LoadingSpinnerProps {
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
-
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+export const LoadingSpinner = ({
   size = 'md',
   className,
 }) => {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { useApp } from '@/context/AppContext';
+import { useApp } from '../../context/AppContext';
 import { Bell, Moon, Sun, User } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 
-export const Header: React.FC = () => {
+export const Header = () => {
   const { user, settings, updateSettings, alerts } = useApp();
   const activeAlerts = alerts.filter(a => !a.resolved).length;
 

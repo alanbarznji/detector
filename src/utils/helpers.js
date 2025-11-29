@@ -1,16 +1,15 @@
 import { format, formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
-import { Alert, Camera, Sensor } from '@/types';
 
-export const formatDate = (date: Date): string => {
+export const formatDate = (date) => {
   return format(date, 'dd/MM/yyyy HH:mm', { locale: ar });
 };
 
-export const formatRelativeTime = (date: Date): string => {
+export const formatRelativeTime = (date) => {
   return formatDistanceToNow(date, { addSuffix: true, locale: ar });
 };
 
-export const getCameraStatusColor = (status: string): string => {
+export const getCameraStatusColor = (status) => {
   switch (status) {
     case 'online':
       return 'text-success-500 bg-success-50 dark:bg-success-900/20';
@@ -23,7 +22,7 @@ export const getCameraStatusColor = (status: string): string => {
   }
 };
 
-export const getSensorStatusColor = (status: string): string => {
+export const getSensorStatusColor = (status) => {
   switch (status) {
     case 'working':
       return 'text-success-500 bg-success-50 dark:bg-success-900/20';
@@ -36,7 +35,7 @@ export const getSensorStatusColor = (status: string): string => {
   }
 };
 
-export const getAlertSeverityColor = (severity: string): string => {
+export const getAlertSeverityColor = (severity) => {
   switch (severity) {
     case 'critical':
       return 'text-danger-700 bg-danger-100 dark:bg-danger-900/30 border-danger-200';
@@ -51,8 +50,8 @@ export const getAlertSeverityColor = (severity: string): string => {
   }
 };
 
-export const getAlertTypeLabel = (type: string): string => {
-  const labels: Record<string, string> = {
+export const getAlertTypeLabel = (type) => {
+  const labels = {
     fire: 'حريق',
     smoke: 'دخان',
     ppe_violation: 'مخالفة معدات السلامة',
@@ -63,8 +62,48 @@ export const getAlertTypeLabel = (type: string): string => {
   return labels[type] || type;
 };
 
-export const getSensorTypeLabel = (type: string): string => {
-  const labels: Record<string, string> = {
+export const getPPEViolationLabel = (violationType) => {
+  const labels = {
+    no_helmet: 'بدون خوذة',
+    no_vest: 'بدون سترة سلامة',
+    no_gloves: 'بدون قفازات',
+    no_boots: 'بدون أحذية سلامة',
+    no_goggles: 'بدون نظارات واقية',
+    no_mask: 'بدون كمامة',
+  };
+  return labels[violationType] || violationType;
+};
+
+export const getDetectionTypeLabel = (detectionType) => {
+  const labels = {
+    fire: 'كشف الحريق',
+    smoke: 'كشف الدخان',
+    ppe: 'كشف معدات السلامة',
+    fire_and_smoke: 'كشف الحريق والدخان',
+    all: 'كشف شامل',
+  };
+  return labels[detectionType] || detectionType;
+};
+
+export const getDetectionTypeBadgeColor = (detectionType) => {
+  switch (detectionType) {
+    case 'fire':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+    case 'smoke':
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
+    case 'ppe':
+      return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
+    case 'fire_and_smoke':
+      return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
+    case 'all':
+      return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
+    default:
+      return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
+  }
+};
+
+export const getSensorTypeLabel = (type) => {
+  const labels = {
     gas: 'غاز',
     temperature: 'حرارة',
     motion: 'حركة',
@@ -74,7 +113,7 @@ export const getSensorTypeLabel = (type: string): string => {
   return labels[type] || type;
 };
 
-export const exportToCSV = (data: Alert[], filename: string = 'alerts.csv') => {
+export const exportToCSV = (data, filename = 'alerts.csv') => {
   const headers = ['التاريخ', 'النوع', 'المصدر', 'الوصف', 'الحالة', 'تم الحل بواسطة'];
 
   const rows = data.map(alert => [
@@ -98,7 +137,7 @@ export const exportToCSV = (data: Alert[], filename: string = 'alerts.csv') => {
   link.click();
 };
 
-export const getGridCols = (layout: string): string => {
+export const getGridCols = (layout) => {
   switch (layout) {
     case '1x1':
       return 'grid-cols-1';
@@ -113,11 +152,11 @@ export const getGridCols = (layout: string): string => {
   }
 };
 
-export const isSensorValueInRange = (sensor: Sensor): boolean => {
+export const isSensorValueInRange = (sensor) => {
   return sensor.currentValue >= sensor.threshold.min && sensor.currentValue <= sensor.threshold.max;
 };
 
-export const getActiveAlerts = (items: Camera[] | Sensor[]): number => {
+export const getActiveAlerts = (items) => {
   return items.reduce((count, item) => {
     return count + item.alerts.filter(alert => !alert.resolved).length;
   }, 0);

@@ -1,17 +1,11 @@
 import React from 'react';
-import { Sensor as SensorType } from '@/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
-import { getSensorStatusColor, getSensorTypeLabel, isSensorValueInRange } from '@/utils/helpers';
-import { useSensorData } from '@/hooks/useSensorData';
+import { getSensorStatusColor, getSensorTypeLabel, isSensorValueInRange } from '../utils/helpers';
+import { useSensorData } from '../hooks/useSensorData';
 import { Activity, AlertTriangle, Thermometer, Wind, Radio, Droplets, Gauge } from 'lucide-react';
 
-interface SensorCardProps {
-  sensor: SensorType;
-  onClick?: () => void;
-}
-
-export const SensorCard: React.FC<SensorCardProps> = ({ sensor, onClick }) => {
+export const SensorCard = ({ sensor, onClick }) => {
   const { currentValue, isUpdating, isInRange } = useSensorData(sensor);
   const activeAlerts = sensor.alerts.filter(a => !a.resolved);
 

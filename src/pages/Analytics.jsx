@@ -1,8 +1,8 @@
 import React from 'react';
-import { useApp } from '@/context/AppContext';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { mockAnalytics } from '@/utils/mockData';
+import { useApp } from '../context/AppContext';
+import { Card } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
+import { mockAnalytics } from '../utils/mockData';
 import {
   BarChart,
   Bar,
@@ -20,7 +20,7 @@ import {
 } from 'recharts';
 import { TrendingUp, Activity, AlertTriangle, Camera } from 'lucide-react';
 
-export const Analytics: React.FC = () => {
+export const Analytics = () => {
   const { cameras, sensors, alerts } = useApp();
 
   const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899'];

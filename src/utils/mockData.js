@@ -1,6 +1,4 @@
-import { Camera, Sensor, Alert, TimelineEvent, AnalyticsData } from '@/types';
-
-export const mockCameras: Camera[] = [
+export const mockCameras = [
   {
     id: '1',
     name: 'كاميرا المدخل الرئيسي',
@@ -10,6 +8,8 @@ export const mockCameras: Camera[] = [
     lastFrame: 'https://placehold.co/640x480/1e40af/ffffff?text=Live+Feed+1',
     alerts: [],
     createdAt: new Date('2024-01-15'),
+    detectionCapabilities: ['fire', 'smoke', 'ppe'],
+    isDetectionActive: true,
   },
   {
     id: '2',
@@ -20,6 +20,8 @@ export const mockCameras: Camera[] = [
     lastFrame: 'https://placehold.co/640x480/2563eb/ffffff?text=Live+Feed+2',
     alerts: [],
     createdAt: new Date('2024-01-16'),
+    detectionCapabilities: ['fire', 'smoke'],
+    isDetectionActive: true,
   },
   {
     id: '3',
@@ -30,6 +32,8 @@ export const mockCameras: Camera[] = [
     lastFrame: 'https://placehold.co/640x480/3b82f6/ffffff?text=Live+Feed+3',
     alerts: [],
     createdAt: new Date('2024-01-17'),
+    detectionCapabilities: ['ppe'],
+    isDetectionActive: true,
   },
   {
     id: '4',
@@ -40,6 +44,8 @@ export const mockCameras: Camera[] = [
     lastFrame: 'https://placehold.co/640x480/6b7280/ffffff?text=Offline',
     alerts: [],
     createdAt: new Date('2024-01-18'),
+    detectionCapabilities: ['fire', 'smoke'],
+    isDetectionActive: false,
   },
   {
     id: '5',
@@ -50,6 +56,8 @@ export const mockCameras: Camera[] = [
     lastFrame: 'https://placehold.co/640x480/60a5fa/ffffff?text=Live+Feed+5',
     alerts: [],
     createdAt: new Date('2024-01-19'),
+    detectionCapabilities: ['fire', 'smoke', 'ppe'],
+    isDetectionActive: true,
   },
   {
     id: '6',
@@ -60,10 +68,12 @@ export const mockCameras: Camera[] = [
     lastFrame: 'https://placehold.co/640x480/93c5fd/ffffff?text=Live+Feed+6',
     alerts: [],
     createdAt: new Date('2024-01-20'),
+    detectionCapabilities: ['fire', 'smoke'],
+    isDetectionActive: true,
   },
 ];
 
-export const mockSensors: Sensor[] = [
+export const mockSensors = [
   {
     id: '1',
     name: 'حساس الغاز - المخزن',
@@ -131,7 +141,7 @@ export const mockSensors: Sensor[] = [
   },
 ];
 
-export const mockAlerts: Alert[] = [
+export const mockAlerts = [
   {
     id: '1',
     type: 'fire',
@@ -145,6 +155,10 @@ export const mockAlerts: Alert[] = [
     resolvedBy: 'أحمد محمد',
     resolvedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
     imageUrl: 'https://placehold.co/400x300/dc2626/ffffff?text=Fire+Detected',
+    detectionInfo: {
+      detectionType: 'fire',
+      confidence: 0.95
+    }
   },
   {
     id: '2',
@@ -159,6 +173,10 @@ export const mockAlerts: Alert[] = [
     resolvedBy: 'سارة أحمد',
     resolvedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
     imageUrl: 'https://placehold.co/400x300/f59e0b/ffffff?text=Smoke+Detected',
+    detectionInfo: {
+      detectionType: 'smoke',
+      confidence: 0.88
+    }
   },
   {
     id: '3',
@@ -170,7 +188,13 @@ export const mockAlerts: Alert[] = [
     severity: 'medium',
     description: 'عامل بدون خوذة في منطقة الإنتاج',
     resolved: false,
-    imageUrl: 'https://placehold.co/400x300/f59e0b/ffffff?text=PPE+Violation',
+    imageUrl: 'https://placehold.co/400x300/f59e0b/ffffff?text=No+Helmet',
+    ppeViolationType: 'no_helmet',
+    detectionInfo: {
+      detectionType: 'ppe',
+      confidence: 0.92,
+      missingItems: ['helmet']
+    }
   },
   {
     id: '4',
@@ -180,7 +204,7 @@ export const mockAlerts: Alert[] = [
     sourceName: 'حساس الغاز - المخزن',
     timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000),
     severity: 'critical',
-    description: 'تسرب غاز خطير في المخزن',
+    description: 'تسرب غاز خطير في المخزن - 95 PPM',
     resolved: true,
     resolvedBy: 'خالد عمر',
     resolvedAt: new Date(Date.now() - 9 * 60 * 60 * 1000),
@@ -207,11 +231,37 @@ export const mockAlerts: Alert[] = [
     description: 'حركة غير مصرح بها في المدخل الخلفي',
     resolved: false,
   },
+  {
+    id: '7',
+    type: 'ppe_violation',
+    sourceType: 'camera',
+    sourceId: '1',
+    sourceName: 'كاميرا المدخل الرئيسي',
+    timestamp: new Date(Date.now() - 20 * 60 * 1000),
+    severity: 'high',
+    description: 'عامل بدون سترة سلامة وقفازات',
+    resolved: false,
+    imageUrl: 'https://placehold.co/400x300/f59e0b/ffffff?text=PPE+Violation',
+    ppeViolationType: 'no_vest',
+    detectionInfo: {
+      detectionType: 'ppe',
+      confidence: 0.89,
+      missingItems: ['vest', 'gloves']
+    }
+  },
 ];
 
-export const mockTimelineEvents: TimelineEvent[] = [
+export const mockTimelineEvents = [
   {
     id: '1',
+    type: 'alert',
+    timestamp: new Date(Date.now() - 20 * 60 * 1000),
+    description: 'تنبيه: عامل بدون سترة سلامة وقفازات',
+    icon: 'alert-triangle',
+    severity: 'warning',
+  },
+  {
+    id: '2',
     type: 'alert',
     timestamp: new Date(Date.now() - 30 * 60 * 1000),
     description: 'تنبيه: عامل بدون خوذة في منطقة الإنتاج',
@@ -219,7 +269,7 @@ export const mockTimelineEvents: TimelineEvent[] = [
     severity: 'warning',
   },
   {
-    id: '2',
+    id: '3',
     type: 'alert',
     timestamp: new Date(Date.now() - 45 * 60 * 1000),
     description: 'تنبيه: درجة حرارة مرتفعة - 42°C',
@@ -227,7 +277,7 @@ export const mockTimelineEvents: TimelineEvent[] = [
     severity: 'error',
   },
   {
-    id: '3',
+    id: '4',
     type: 'camera_offline',
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
     description: 'كاميرا الساحة الخارجية غير متصلة',
@@ -235,24 +285,16 @@ export const mockTimelineEvents: TimelineEvent[] = [
     severity: 'warning',
   },
   {
-    id: '4',
+    id: '5',
     type: 'alert',
     timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
     description: 'تم حل: تنبيه الدخان في المخزن',
     icon: 'check-circle',
     severity: 'info',
   },
-  {
-    id: '5',
-    type: 'sensor_error',
-    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000),
-    description: 'خطأ في حساس الضغط - خط الأنابيب',
-    icon: 'alert-circle',
-    severity: 'error',
-  },
 ];
 
-export const mockAnalytics: AnalyticsData = {
+export const mockAnalytics = {
   alertsPerDay: [
     { date: '2024-01-20', count: 5 },
     { date: '2024-01-21', count: 8 },

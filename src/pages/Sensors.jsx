@@ -1,12 +1,12 @@
 import React from 'react';
-import { useApp } from '@/context/AppContext';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { SensorCard } from '@/components/SensorCard';
-import { EmptyState } from '@/components/ui/EmptyState';
+import { useApp } from '../context/AppContext';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { SensorCard } from '../components/SensorCard';
+import { EmptyState } from '../components/ui/EmptyState';
 import { Plus, Activity, AlertCircle, CheckCircle } from 'lucide-react';
 
-export const Sensors: React.FC = () => {
+export const Sensors = () => {
   const { sensors } = useApp();
 
   const workingSensors = sensors.filter(s => s.status === 'working').length;

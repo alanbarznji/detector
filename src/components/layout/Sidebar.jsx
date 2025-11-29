@@ -12,7 +12,7 @@ const navItems = [
   { to: '/settings', icon: Settings, label: 'الإعدادات' },
 ];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar = () => {
   return (
     <aside className="fixed right-0 top-0 h-screen w-64 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex flex-col">
       <div className="p-6 border-b border-gray-200 dark:border-gray-700">

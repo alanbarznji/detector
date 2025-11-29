@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Sensor } from '@/types';
 
-export const useSensorData = (sensor: Sensor, updateInterval: number = 2000) => {
+export const useSensorData = (sensor, updateInterval = 2000) => {
   const [currentValue, setCurrentValue] = useState(sensor.currentValue);
   const [isUpdating, setIsUpdating] = useState(false);
 

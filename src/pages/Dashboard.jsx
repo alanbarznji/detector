@@ -1,14 +1,14 @@
 import React from 'react';
-import { useApp } from '@/context/AppContext';
-import { Card } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { CameraCard } from '@/components/CameraCard';
-import { AlertItem } from '@/components/AlertItem';
-import { mockTimelineEvents } from '@/utils/mockData';
-import { formatRelativeTime, getAlertTypeLabel } from '@/utils/helpers';
+import { useApp } from '../context/AppContext';
+import { Card } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
+import { CameraCard } from '../components/CameraCard';
+import { AlertItem } from '../components/AlertItem';
+import { mockTimelineEvents } from '../utils/mockData';
+import { formatRelativeTime, getAlertTypeLabel } from '../utils/helpers';
 import { Camera, Activity, AlertTriangle, Clock, TrendingUp, Video, VideoOff } from 'lucide-react';
 
-export const Dashboard: React.FC = () => {
+export const Dashboard = () => {
   const { cameras, sensors, alerts, resolveAlert, user } = useApp();
 
   const onlineCameras = cameras.filter(c => c.status === 'online').length;

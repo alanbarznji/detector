@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { useApp } from '@/context/AppContext';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { CameraCard } from '@/components/CameraCard';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { getGridCols } from '@/utils/helpers';
-import { GridLayout } from '@/types';
+import { useApp } from '../context/AppContext';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { CameraCard } from '../components/CameraCard';
+import { EmptyState } from '../components/ui/EmptyState';
+import { getGridCols } from '../utils/helpers';
 import { Plus, Grid3x3, LayoutGrid, Maximize2, Video } from 'lucide-react';
 
-export const Cameras: React.FC = () => {
+export const Cameras = () => {
   const { cameras } = useApp();
   const [layout, setLayout] = useState<GridLayout>('2x2');
 

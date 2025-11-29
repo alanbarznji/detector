@@ -1,26 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Camera, Sensor, Alert, User, AppSettings } from '@/types';
-import { mockCameras, mockSensors, mockAlerts } from '@/utils/mockData';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { mockCameras, mockSensors, mockAlerts } from '../utils/mockData';
 
-interface AppContextType {
-  cameras: Camera[];
-  sensors: Sensor[];
-  alerts: Alert[];
-  user: User | null;
-  settings: AppSettings;
-  addCamera: (camera: Camera) => void;
-  updateCamera: (id: string, updates: Partial<Camera>) => void;
-  deleteCamera: (id: string) => void;
-  addSensor: (sensor: Sensor) => void;
-  updateSensor: (id: string, updates: Partial<Sensor>) => void;
-  deleteSensor: (id: string) => void;
-  resolveAlert: (id: string, resolvedBy: string) => void;
-  updateSettings: (settings: Partial<AppSettings>) => void;
-}
+const AppContext = createContext(undefined);
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
-
-const defaultSettings: AppSettings = {
+const defaultSettings = {
   theme: 'light',
   cameraSettings: {
     reconnectInterval: 5000,
@@ -37,22 +20,22 @@ const defaultSettings: AppSettings = {
   },
 };
 
-const defaultUser: User = {
+const defaultUser = {
   id: '1',
   name: 'أحمد محمد',
   email: 'admin@example.com',
   role: 'admin',
 };
 
-export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [cameras, setCameras] = useState<Camera[]>(mockCameras);
-  const [sensors, setSensors] = useState<Sensor[]>(mockSensors);
-  const [alerts, setAlerts] = useState<Alert[]>(mockAlerts);
-  const [user] = useState<User | null>(defaultUser);
-  const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+export const AppProvider = ({ children }) => {
+  const [cameras, setCameras] = useState(mockCameras);
+  const [sensors, setSensors] = useState(mockSensors);
+  const [alerts, setAlerts] = useState(mockAlerts);
+  const [user] = useState(defaultUser);
+  const [settings, setSettings] = useState(defaultSettings);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
       setSettings(prev => ({ ...prev, theme: savedTheme }));
       if (savedTheme === 'dark') {
@@ -61,31 +44,31 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   }, []);
 
-  const addCamera = (camera: Camera) => {
+  const addCamera = (camera) => {
     setCameras(prev => [...prev, camera]);
   };
 
-  const updateCamera = (id: string, updates: Partial<Camera>) => {
+  const updateCamera = (id, updates) => {
     setCameras(prev => prev.map(cam => cam.id === id ? { ...cam, ...updates } : cam));
   };
 
-  const deleteCamera = (id: string) => {
+  const deleteCamera = (id) => {
     setCameras(prev => prev.filter(cam => cam.id !== id));
   };
 
-  const addSensor = (sensor: Sensor) => {
+  const addSensor = (sensor) => {
     setSensors(prev => [...prev, sensor]);
   };
 
-  const updateSensor = (id: string, updates: Partial<Sensor>) => {
+  const updateSensor = (id, updates) => {
     setSensors(prev => prev.map(sen => sen.id === id ? { ...sen, ...updates } : sen));
   };
 
-  const deleteSensor = (id: string) => {
+  const deleteSensor = (id) => {
     setSensors(prev => prev.filter(sen => sen.id !== id));
   };
 
-  const resolveAlert = (id: string, resolvedBy: string) => {
+  const resolveAlert = (id, resolvedBy) => {
     setAlerts(prev => prev.map(alert =>
       alert.id === id
         ? { ...alert, resolved: true, resolvedBy, resolvedAt: new Date() }
@@ -93,7 +76,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     ));
   };
 
-  const updateSettings = (newSettings: Partial<AppSettings>) => {
+  const updateSettings = (newSettings) => {
     setSettings(prev => {
       const updated = { ...prev, ...newSettings };
       if (newSettings.theme) {
@@ -108,7 +91,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     });
   };
 
-  const value: AppContextType = {
+  const value = {
     cameras,
     sensors,
     alerts,

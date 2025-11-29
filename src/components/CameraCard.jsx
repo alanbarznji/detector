@@ -1,21 +1,12 @@
 import React from 'react';
-import { Camera as CameraType } from '@/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
 import { LoadingSpinner } from './ui/LoadingSpinner';
-import { useCameraStream } from '@/hooks/useCameraStream';
-import { getCameraStatusColor } from '@/utils/helpers';
-import { Video, VideoOff, AlertTriangle, Flame, Cloud } from 'lucide-react';
+import { useCameraStream } from '../hooks/useCameraStream';
+import { getCameraStatusColor, getDetectionTypeLabel, getDetectionTypeBadgeColor } from '../utils/helpers';
+import { Video, VideoOff, AlertTriangle, Flame, Cloud, Eye } from 'lucide-react';
 
-interface CameraCardProps {
-  camera: CameraType;
-  onClick?: () => void;
-  showControls?: boolean;
-  onEdit?: () => void;
-  onDelete?: () => void;
-}
-
-export const CameraCard: React.FC<CameraCardProps> = ({
+export const CameraCard = ({
   camera,
   onClick,
   showControls = false,
@@ -36,7 +27,7 @@ export const CameraCard: React.FC<CameraCardProps> = ({
     }
   };
 
-  const getAlertIcon = (type: string) => {
+  const getAlertIcon = (type) => {
     switch (type) {
       case 'fire':
         return <Flame className="w-4 h-4" />;
@@ -99,6 +90,20 @@ export const CameraCard: React.FC<CameraCardProps> = ({
               </div>
             </div>
           )}
+
+          {/* Detection Capabilities Indicator */}
+          {camera.isDetectionActive && camera.detectionCapabilities && camera.detectionCapabilities.length > 0 && (
+            <div className="absolute bottom-2 left-2">
+              <div className="flex items-center gap-1 bg-black/70 text-white px-2 py-1 rounded text-xs">
+                <Eye className="w-3 h-3" />
+                <span>
+                  {camera.detectionCapabilities.includes('fire') && camera.detectionCapabilities.includes('smoke') && camera.detectionCapabilities.includes('ppe')
+                    ? 'كشف شامل'
+                    : camera.detectionCapabilities.join(' + ').toUpperCase()}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="p-4">
@@ -113,6 +118,20 @@ export const CameraCard: React.FC<CameraCardProps> = ({
               </p>
             </div>
           </div>
+
+          {/* Detection Capabilities Badges */}
+          {camera.detectionCapabilities && camera.detectionCapabilities.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {camera.detectionCapabilities.map((type) => (
+                <span
+                  key={type}
+                  className={`px-2 py-0.5 rounded-full text-xs font-medium ${getDetectionTypeBadgeColor(type)}`}
+                >
+                  {getDetectionTypeLabel(type)}
+                </span>
+              ))}
+            </div>
+          )}
 
           {activeAlerts.length > 0 && (
             <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">

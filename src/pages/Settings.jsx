@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useApp } from '@/context/AppContext';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
+import { useApp } from '../context/AppContext';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
 import {
   Settings as SettingsIcon,
   Users,
@@ -15,7 +15,7 @@ import {
   Shield,
 } from 'lucide-react';
 
-export const Settings: React.FC = () => {
+export const Settings = () => {
   const { settings, updateSettings, user } = useApp();
   const [localSettings, setLocalSettings] = useState(settings);
   const [activeTab, setActiveTab] = useState<'general' | 'cameras' | 'sensors' | 'users' | 'notifications'>('general');

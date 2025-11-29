@@ -1,18 +1,11 @@
 import React from 'react';
-import { Alert } from '@/types';
 import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
-import { formatDate, formatRelativeTime, getAlertTypeLabel, getAlertSeverityColor } from '@/utils/helpers';
-import { Flame, Cloud, AlertTriangle, Wind, Thermometer, Radio, CheckCircle, Camera, Activity } from 'lucide-react';
+import { formatDate, formatRelativeTime, getAlertTypeLabel, getAlertSeverityColor, getPPEViolationLabel } from '../utils/helpers';
+import { Flame, Cloud, AlertTriangle, Wind, Thermometer, Radio, CheckCircle, Camera, Activity, Shield } from 'lucide-react';
 import clsx from 'clsx';
 
-interface AlertItemProps {
-  alert: Alert;
-  onResolve?: (alertId: string) => void;
-  showImage?: boolean;
-}
-
-export const AlertItem: React.FC<AlertItemProps> = ({
+export const AlertItem = ({
   alert,
   onResolve,
   showImage = false,
@@ -25,7 +18,7 @@ export const AlertItem: React.FC<AlertItemProps> = ({
       case 'smoke':
         return <Cloud className={iconClass} />;
       case 'ppe_violation':
-        return <AlertTriangle className={iconClass} />;
+        return <Shield className={iconClass} />;
       case 'gas':
         return <Wind className={iconClass} />;
       case 'temperature':
@@ -82,11 +75,11 @@ export const AlertItem: React.FC<AlertItemProps> = ({
                 {getAlertIcon()}
               </div>
               <div>
-                <div className="flex items-center gap-2 mb-1">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                     {getAlertTypeLabel(alert.type)}
                   </h3>
-                  <Badge variant={getSeverityVariant() as any} size="sm">
+                  <Badge variant={getSeverityVariant()} size="sm">
                     {alert.severity === 'critical' ? 'حرج' :
                      alert.severity === 'high' ? 'عالي' :
                      alert.severity === 'medium' ? 'متوسط' : 'منخفض'}
@@ -101,6 +94,33 @@ export const AlertItem: React.FC<AlertItemProps> = ({
                 <p className="text-sm text-gray-600 dark:text-gray-300">
                   {alert.description}
                 </p>
+
+                {/* PPE Violation Details */}
+                {alert.type === 'ppe_violation' && alert.ppeViolationType && (
+                  <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
+                    <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">
+                      <Shield className="w-4 h-4 inline ml-1" />
+                      مخالفة معدات السلامة: {getPPEViolationLabel(alert.ppeViolationType)}
+                    </p>
+                    {alert.detectionInfo && alert.detectionInfo.missingItems && alert.detectionInfo.missingItems.length > 0 && (
+                      <div className="mt-1 text-xs text-yellow-700 dark:text-yellow-400">
+                        المعدات المفقودة: {alert.detectionInfo.missingItems.map(item => getPPEViolationLabel('no_' + item)).join('، ')}
+                      </div>
+                    )}
+                    {alert.detectionInfo && alert.detectionInfo.confidence && (
+                      <div className="mt-1 text-xs text-yellow-700 dark:text-yellow-400">
+                        دقة الكشف: {Math.round(alert.detectionInfo.confidence * 100)}%
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Detection Info for other types */}
+                {(alert.type === 'fire' || alert.type === 'smoke') && alert.detectionInfo && alert.detectionInfo.confidence && (
+                  <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    دقة الكشف: {Math.round(alert.detectionInfo.confidence * 100)}%
+                  </div>
+                )}
               </div>
             </div>
 

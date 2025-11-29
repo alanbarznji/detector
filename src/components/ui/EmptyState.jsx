@@ -1,13 +1,6 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
-interface EmptyStateProps {
-  icon?: ReactNode;
-  title: string;
-  description?: string;
-  action?: ReactNode;
-}
-
-export const EmptyState: React.FC<EmptyStateProps> = ({
+export const EmptyState = ({
   icon,
   title,
   description,

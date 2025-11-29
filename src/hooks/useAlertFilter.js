@@ -1,18 +1,7 @@
 import { useState, useMemo } from 'react';
-import { Alert } from '@/types';
 
-export interface AlertFilters {
-  type?: string;
-  sourceType?: 'camera' | 'sensor';
-  sourceId?: string;
-  severity?: string;
-  resolved?: boolean;
-  dateFrom?: Date;
-  dateTo?: Date;
-}
-
-export const useAlertFilter = (alerts: Alert[]) => {
-  const [filters, setFilters] = useState<AlertFilters>({});
+export const useAlertFilter = (alerts) => {
+  const [filters, setFilters] = useState({});
 
   const filteredAlerts = useMemo(() => {
     return alerts.filter(alert => {
@@ -27,7 +16,7 @@ export const useAlertFilter = (alerts: Alert[]) => {
     });
   }, [alerts, filters]);
 
-  const updateFilter = (key: keyof AlertFilters, value: any) => {
+  const updateFilter = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Camera } from '@/types';
 
-export const useCameraStream = (camera: Camera) => {
+export const useCameraStream = (camera) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (camera.status === 'offline') {

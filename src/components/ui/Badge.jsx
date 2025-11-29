@@ -1,14 +1,7 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 
-interface BadgeProps {
-  children: ReactNode;
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-}
-
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge = ({
   children,
   variant = 'default',
   size = 'md',

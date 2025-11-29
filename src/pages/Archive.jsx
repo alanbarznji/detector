@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { useApp } from '@/context/AppContext';
-import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
-import { AlertItem } from '@/components/AlertItem';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { useAlertFilter } from '@/hooks/useAlertFilter';
-import { exportToCSV, getAlertTypeLabel } from '@/utils/helpers';
+import { useApp } from '../context/AppContext';
+import { Card } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Badge } from '../components/ui/Badge';
+import { AlertItem } from '../components/AlertItem';
+import { EmptyState } from '../components/ui/EmptyState';
+import { useAlertFilter } from '../hooks/useAlertFilter';
+import { exportToCSV, getAlertTypeLabel } from '../utils/helpers';
 import { Download, Filter, X, Archive as ArchiveIcon, Search } from 'lucide-react';
-import { AlertType } from '@/types';
 
-export const Archive: React.FC = () => {
+export const Archive = () => {
   const { alerts, cameras, sensors, resolveAlert, user } = useApp();
   const { filteredAlerts, filters, updateFilter, clearFilters } = useAlertFilter(alerts);
   const [searchTerm, setSearchTerm] = useState('');
