@@ -14,7 +14,7 @@ export const Archive = () => {
   const { filteredAlerts, filters, updateFilter, clearFilters } = useAlertFilter(alerts);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleResolveAlert = (alertId: string) => {
+  const handleResolveAlert = (alertId) => {
     if (user) {
       resolveAlert(alertId, user.name);
     }

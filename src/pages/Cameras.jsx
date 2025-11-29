@@ -15,7 +15,7 @@ export const Cameras = () => {
   const onlineCameras = cameras.filter(c => c.status === 'online').length;
   const offlineCameras = cameras.filter(c => c.status === 'offline').length;
 
-  const gridLayouts: { value: GridLayout; icon: any; label: string }[] = [
+  const gridLayouts = [
     { value: '1x1', icon: Maximize2, label: '1×1' },
     { value: '2x2', icon: LayoutGrid, label: '2×2' },
     { value: '3x3', icon: Grid3x3, label: '3×3' },

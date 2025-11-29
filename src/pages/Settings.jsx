@@ -30,7 +30,7 @@ export const Settings = () => {
     { id: 'sensors', label: 'الحساسات', icon: Activity },
     { id: 'notifications', label: 'الإشعارات', icon: Bell },
     { id: 'users', label: 'المستخدمين', icon: Users },
-  ] as const;
+  ];
 
   return (
     <div className="space-y-6">

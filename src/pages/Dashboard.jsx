@@ -19,7 +19,7 @@ export const Dashboard = () => {
 
   const displayCameras = cameras.slice(0, 4);
 
-  const handleResolveAlert = (alertId: string) => {
+  const handleResolveAlert = (alertId) => {
     if (user) {
       resolveAlert(alertId, user.name);
     }
