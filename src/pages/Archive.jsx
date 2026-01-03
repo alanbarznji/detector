@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -8,15 +7,23 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { useAlertFilter } from '../hooks/useAlertFilter';
 import { exportToCSV, getAlertTypeLabel } from '../utils/helpers';
 import { Download, Filter, X, Archive as ArchiveIcon, Search } from 'lucide-react';
+import { useAppSelector, useAppDispatch } from '../hooks/useRedux';
+import { resolveAlert } from '../store/slices/alertSlice';
 
 export const Archive = () => {
-  const { alerts, cameras, sensors, resolveAlert, user } = useApp();
+  const dispatch = useAppDispatch();
+  const alerts = useAppSelector((state) => state.alerts.items);
+  const cameras = useAppSelector((state) => state.cameras.items);
+  const sensors = useAppSelector((state) => state.sensors.items);
+
   const { filteredAlerts, filters, updateFilter, clearFilters } = useAlertFilter(alerts);
   const [searchTerm, setSearchTerm] = useState('');
 
+  const user = { name: 'أحمد محمد', role: 'admin' };
+
   const handleResolveAlert = (alertId) => {
     if (user) {
-      resolveAlert(alertId, user.name);
+      dispatch(resolveAlert({ id: alertId, resolvedBy: user.name }));
     }
   };
 

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { alertAPI } from '../../services/api';
+import { mockAlerts } from '../../utils/mockData';
 
 // Async thunks
 export const fetchAlerts = createAsyncThunk(
@@ -45,7 +46,7 @@ export const fetchAlertStats = createAsyncThunk(
 const alertSlice = createSlice({
   name: 'alerts',
   initialState: {
-    items: [],
+    items: mockAlerts,
     stats: {
       total: 0,
       active: 0,

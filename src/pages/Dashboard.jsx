@@ -1,5 +1,4 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { CameraCard } from '../components/CameraCard';
@@ -7,9 +6,16 @@ import { AlertItem } from '../components/AlertItem';
 import { mockTimelineEvents } from '../utils/mockData';
 import { formatRelativeTime, getAlertTypeLabel } from '../utils/helpers';
 import { Camera, Activity, AlertTriangle, Clock, TrendingUp, Video, VideoOff } from 'lucide-react';
+import { useAppSelector, useAppDispatch } from '../hooks/useRedux';
+import { resolveAlert } from '../store/slices/alertSlice';
 
 export const Dashboard = () => {
-  const { cameras, sensors, alerts, resolveAlert, user } = useApp();
+  const dispatch = useAppDispatch();
+  const cameras = useAppSelector((state) => state.cameras.items);
+  const sensors = useAppSelector((state) => state.sensors.items);
+  const alerts = useAppSelector((state) => state.alerts.items);
+
+  const user = { name: 'أحمد محمد', role: 'admin' };
 
   const onlineCameras = cameras.filter(c => c.status === 'online').length;
   const offlineCameras = cameras.filter(c => c.status === 'offline').length;
@@ -21,7 +27,7 @@ export const Dashboard = () => {
 
   const handleResolveAlert = (alertId) => {
     if (user) {
-      resolveAlert(alertId, user.name);
+      dispatch(resolveAlert({ id: alertId, resolvedBy: user.name }));
     }
   };
 

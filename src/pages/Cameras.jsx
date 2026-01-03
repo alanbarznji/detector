@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -7,10 +6,11 @@ import { CameraCard } from '../components/CameraCard';
 import { EmptyState } from '../components/ui/EmptyState';
 import { getGridCols } from '../utils/helpers';
 import { Plus, Grid3x3, LayoutGrid, Maximize2, Video } from 'lucide-react';
+import { useAppSelector } from '../hooks/useRedux';
 
 export const Cameras = () => {
-  const { cameras } = useApp();
-  const [layout, setLayout] = useState<GridLayout>('2x2');
+  const cameras = useAppSelector((state) => state.cameras.items);
+  const [layout, setLayout] = useState('2x2');
 
   const onlineCameras = cameras.filter(c => c.status === 'online').length;
   const offlineCameras = cameras.filter(c => c.status === 'offline').length;

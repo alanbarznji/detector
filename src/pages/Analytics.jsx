@@ -1,5 +1,4 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { mockAnalytics } from '../utils/mockData';
@@ -19,9 +18,12 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp, Activity, AlertTriangle, Camera } from 'lucide-react';
+import { useAppSelector } from '../hooks/useRedux';
 
 export const Analytics = () => {
-  const { cameras, sensors, alerts } = useApp();
+  const cameras = useAppSelector((state) => state.cameras.items);
+  const sensors = useAppSelector((state) => state.sensors.items);
+  const alerts = useAppSelector((state) => state.alerts.items);
 
   const COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899'];
 

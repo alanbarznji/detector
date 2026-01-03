@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { sensorAPI } from '../../services/api';
+import { mockSensors } from '../../utils/mockData';
 
 // Async thunks
 export const fetchSensors = createAsyncThunk(
@@ -45,7 +46,7 @@ export const updateSensorReading = createAsyncThunk(
 const sensorSlice = createSlice({
   name: 'sensors',
   initialState: {
-    items: [],
+    items: mockSensors,
     loading: false,
     error: null,
   },

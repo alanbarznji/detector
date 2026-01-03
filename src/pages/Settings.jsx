@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -14,14 +13,56 @@ import {
   Save,
   Shield,
 } from 'lucide-react';
+import { useAppSelector, useAppDispatch } from '../hooks/useRedux';
+import {
+  setTheme,
+  updateNotificationSettings,
+  setAutoRefresh,
+  setRefreshInterval
+} from '../store/slices/settingsSlice';
 
 export const Settings = () => {
-  const { settings, updateSettings, user } = useApp();
-  const [localSettings, setLocalSettings] = useState(settings);
+  const dispatch = useAppDispatch();
+  const settings = useAppSelector((state) => state.settings);
+  const [localSettings, setLocalSettings] = useState({
+    theme: settings.theme,
+    cameraSettings: {
+      reconnectInterval: 5000,
+      streamQuality: 'medium'
+    },
+    sensorSettings: {
+      updateInterval: 2000,
+      autoAlert: true
+    },
+    notifications: settings.notifications
+  });
   const [activeTab, setActiveTab] = useState('general');
 
+  const user = {
+    name: 'أحمد محمد',
+    email: 'admin@example.com',
+    role: 'admin'
+  };
+
+  useEffect(() => {
+    setLocalSettings({
+      theme: settings.theme,
+      cameraSettings: {
+        reconnectInterval: 5000,
+        streamQuality: 'medium'
+      },
+      sensorSettings: {
+        updateInterval: 2000,
+        autoAlert: true
+      },
+      notifications: settings.notifications
+    });
+  }, [settings]);
+
   const handleSave = () => {
-    updateSettings(localSettings);
+    dispatch(setTheme(localSettings.theme));
+    dispatch(updateNotificationSettings(localSettings.notifications));
+    // You can dispatch other settings updates here
   };
 
   const tabs = [

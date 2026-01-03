@@ -1,13 +1,13 @@
 import React from 'react';
-import { useApp } from '../context/AppContext';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { SensorCard } from '../components/SensorCard';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Plus, Activity, AlertCircle, CheckCircle } from 'lucide-react';
+import { useAppSelector } from '../hooks/useRedux';
 
 export const Sensors = () => {
-  const { sensors } = useApp();
+  const sensors = useAppSelector((state) => state.sensors.items);
 
   const workingSensors = sensors.filter(s => s.status === 'working').length;
   const errorSensors = sensors.filter(s => s.status === 'error').length;

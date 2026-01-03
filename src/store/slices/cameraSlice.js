@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { cameraAPI } from '../../services/api';
+import { mockCameras } from '../../utils/mockData';
 
 // Async thunks
 export const fetchCameras = createAsyncThunk(
@@ -61,7 +62,7 @@ export const captureSnapshot = createAsyncThunk(
 const cameraSlice = createSlice({
   name: 'cameras',
   initialState: {
-    items: [],
+    items: mockCameras,
     loading: false,
     error: null,
     currentFrame: {},
