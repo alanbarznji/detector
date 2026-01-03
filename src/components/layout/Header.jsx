@@ -1,15 +1,24 @@
 import React from 'react';
-import { useApp } from '../../context/AppContext';
 import { Bell, Moon, Sun, User } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
+import { toggleTheme } from '../../store/slices/settingsSlice';
 
 export const Header = () => {
-  const { user, settings, updateSettings, alerts } = useApp();
+  const dispatch = useAppDispatch();
+  const theme = useAppSelector((state) => state.settings.theme);
+  const alerts = useAppSelector((state) => state.alerts.items);
   const activeAlerts = alerts.filter(a => !a.resolved).length;
 
-  const toggleTheme = () => {
-    updateSettings({ theme: settings.theme === 'light' ? 'dark' : 'light' });
+  // Mock user data - you can add a user slice later if needed
+  const user = {
+    name: 'أحمد محمد',
+    role: 'admin'
+  };
+
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme());
   };
 
   return (
@@ -25,8 +34,8 @@ export const Header = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={toggleTheme}
-            icon={settings.theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+            onClick={handleToggleTheme}
+            icon={theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           >
           </Button>
 

@@ -24,7 +24,7 @@ export const Archive = () => {
     exportToCSV(filteredAlerts, 'alerts-archive.csv');
   };
 
-  const alertTypes: AlertType[] = ['fire', 'smoke', 'ppe_violation', 'gas', 'temperature', 'motion'];
+  const alertTypes = ['fire', 'smoke', 'ppe_violation', 'gas', 'temperature', 'motion'];
 
   const searchFilteredAlerts = filteredAlerts.filter(alert =>
     alert.description.toLowerCase().includes(searchTerm.toLowerCase()) ||

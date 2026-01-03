@@ -18,7 +18,7 @@ import {
 export const Settings = () => {
   const { settings, updateSettings, user } = useApp();
   const [localSettings, setLocalSettings] = useState(settings);
-  const [activeTab, setActiveTab] = useState<'general' | 'cameras' | 'sensors' | 'users' | 'notifications'>('general');
+  const [activeTab, setActiveTab] = useState('general');
 
   const handleSave = () => {
     updateSettings(localSettings);
@@ -51,7 +51,7 @@ export const Settings = () => {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                     activeTab === tab.id
                       ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400'
@@ -173,7 +173,7 @@ export const Settings = () => {
                         ...localSettings,
                         cameraSettings: {
                           ...localSettings.cameraSettings,
-                          streamQuality: e.target.value as any,
+                          streamQuality: e.target.value,
                         },
                       })
                     }
