@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# YOLO models (can be large)
+*.pt
+*.onnx
+*.engine
+
+# Test images
+test_images/
+*.jpg
+*.png
+*.jpeg
+
+# Datasets
+datasets/
+data/
+
+# Training runs
+runs/
