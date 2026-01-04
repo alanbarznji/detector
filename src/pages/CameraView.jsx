@@ -7,6 +7,7 @@ import { AlertItem } from '../components/AlertItem';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { useAppSelector, useAppDispatch } from '../hooks/useRedux';
 import { resolveAlert } from '../store/slices/alertSlice';
+import { useCameraStream } from '../hooks/useCameraStream';
 import {
   ArrowLeft,
   Video,
@@ -36,6 +37,7 @@ export const CameraView = () => {
     state.alerts.items.filter(a => a.sourceId === id)
   );
 
+  const { isLoading, currentFrame } = useCameraStream(camera);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -106,9 +108,10 @@ export const CameraView = () => {
       {/* Video Feed */}
       <Card padding="none" className="overflow-hidden">
         <div className={`relative bg-gray-900 ${isFullscreen ? 'fixed inset-0 z-50' : 'aspect-video'}`}>
-          {camera.status === 'loading' ? (
+          {isLoading || camera.status === 'loading' ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <LoadingSpinner size="lg" />
+              <div className="absolute bottom-4 text-white">جاري الاتصال بالكاميرا...</div>
             </div>
           ) : camera.status === 'offline' ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
@@ -118,9 +121,13 @@ export const CameraView = () => {
           ) : (
             <>
               <img
-                src={camera.lastFrame || 'https://placehold.co/1920x1080/1e40af/ffffff?text=Live+Camera+Feed'}
+                src={currentFrame}
                 alt={camera.name}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  // إذا فشل تحميل البث المباشر، استخدم الصورة الثابتة
+                  e.target.src = camera.lastFrame || 'https://placehold.co/1920x1080/1e40af/ffffff?text=Live+Camera+Feed';
+                }}
               />
 
               {/* Live Indicator */}

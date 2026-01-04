@@ -11,7 +11,7 @@ export const CameraCard = ({
   onClick,
   showControls = false,
 }) => {
-  const { isLoading } = useCameraStream(camera);
+  const { isLoading, currentFrame } = useCameraStream(camera);
   const activeAlerts = camera.alerts.filter(a => !a.resolved);
 
   const getStatusBadge = () => {
@@ -58,9 +58,13 @@ export const CameraCard = ({
             </div>
           ) : (
             <img
-              src={camera.lastFrame}
+              src={currentFrame}
               alt={camera.name}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                // إذا فشل تحميل الصورة، استخدم placeholder
+                e.target.src = camera.lastFrame;
+              }}
             />
           )}
 
