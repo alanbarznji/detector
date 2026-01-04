@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { CameraCard } from '../components/CameraCard';
@@ -11,6 +12,7 @@ import { resolveAlert } from '../store/slices/alertSlice';
 
 export const Dashboard = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const cameras = useAppSelector((state) => state.cameras.items);
   const sensors = useAppSelector((state) => state.sensors.items);
   const alerts = useAppSelector((state) => state.alerts.items);
@@ -141,7 +143,11 @@ export const Dashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {displayCameras.map(camera => (
-                <CameraCard key={camera.id} camera={camera} />
+                <CameraCard
+                  key={camera.id}
+                  camera={camera}
+                  onClick={() => navigate(`/cameras/${camera.id}`)}
+                />
               ))}
             </div>
           </Card>

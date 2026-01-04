@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { Cameras } from './pages/Cameras';
+import { CameraView } from './pages/CameraView';
 import { Sensors } from './pages/Sensors';
 import { Archive } from './pages/Archive';
 import { Analytics } from './pages/Analytics';
@@ -28,6 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/cameras" element={<Cameras />} />
+          <Route path="/cameras/:id" element={<CameraView />} />
           <Route path="/sensors" element={<Sensors />} />
           <Route path="/archive" element={<Archive />} />
           <Route path="/analytics" element={<Analytics />} />

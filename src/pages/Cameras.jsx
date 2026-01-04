@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -9,6 +10,7 @@ import { Plus, Grid3x3, LayoutGrid, Maximize2, Video } from 'lucide-react';
 import { useAppSelector } from '../hooks/useRedux';
 
 export const Cameras = () => {
+  const navigate = useNavigate();
   const cameras = useAppSelector((state) => state.cameras.items);
   const [layout, setLayout] = useState('2x2');
 
@@ -87,6 +89,7 @@ export const Cameras = () => {
               key={camera.id}
               camera={camera}
               showControls
+              onClick={() => navigate(`/cameras/${camera.id}`)}
             />
           ))}
         </div>
