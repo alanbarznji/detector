@@ -10,13 +10,18 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 class StreamProcessor {
   constructor() {
     this.activeStreams = new Map();
+    this.hlsStreams = new Map();
     this.snapshotsDir = path.join(process.cwd(), 'uploads', 'snapshots');
+    this.hlsDir = path.join(process.cwd(), 'public', 'hls');
     this.ensureDirectories();
   }
 
   ensureDirectories() {
     if (!fs.existsSync(this.snapshotsDir)) {
       fs.mkdirSync(this.snapshotsDir, { recursive: true });
+    }
+    if (!fs.existsSync(this.hlsDir)) {
+      fs.mkdirSync(this.hlsDir, { recursive: true });
     }
   }
 
@@ -166,6 +171,113 @@ class StreamProcessor {
   stopAllStreams() {
     for (const [cameraId] of this.activeStreams) {
       this.stopStream(cameraId);
+    }
+    for (const [cameraId] of this.hlsStreams) {
+      this.stopHLSStream(cameraId);
+    }
+  }
+
+  /**
+   * Start HLS stream (HTTP Live Streaming)
+   * Better for web browsers - works directly in <video> tag
+   * @param {string} streamUrl - RTSP URL
+   * @param {string} cameraId - Camera ID
+   * @param {Object} io - Socket.IO instance
+   */
+  startHLSStream(streamUrl, cameraId, io) {
+    if (this.hlsStreams.has(cameraId)) {
+      console.log(`HLS stream already active for camera ${cameraId}`);
+      return;
+    }
+
+    const cameraDir = path.join(this.hlsDir, `camera_${cameraId}`);
+    if (!fs.existsSync(cameraDir)) {
+      fs.mkdirSync(cameraDir, { recursive: true });
+    }
+
+    const playlistPath = path.join(cameraDir, 'playlist.m3u8');
+
+    console.log(`Starting HLS stream for camera ${cameraId}`);
+    console.log(`Playlist: ${playlistPath}`);
+
+    const stream = ffmpeg(streamUrl)
+      .inputOptions([
+        '-rtsp_transport', 'tcp',
+        '-analyzeduration', '1000000',
+        '-probesize', '1000000',
+        '-fflags', 'nobuffer',
+        '-flags', 'low_delay'
+      ])
+      .outputOptions([
+        '-c:v', 'libx264',              // H.264 codec
+        '-preset', 'ultrafast',          // Fast encoding
+        '-tune', 'zerolatency',          // Low latency
+        '-g', '30',                      // GOP size
+        '-sc_threshold', '0',
+        '-b:v', '2500k',                 // Video bitrate
+        '-maxrate', '2500k',
+        '-bufsize', '5000k',
+        '-c:a', 'aac',                   // Audio codec
+        '-b:a', '128k',
+        '-ar', '44100',
+        '-f', 'hls',                     // HLS format
+        '-hls_time', '2',                // 2-second segments
+        '-hls_list_size', '5',           // Keep 5 segments
+        '-hls_flags', 'delete_segments+append_list',
+        '-hls_segment_filename', path.join(cameraDir, 'segment_%03d.ts')
+      ])
+      .output(playlistPath)
+      .on('start', (commandLine) => {
+        console.log(`HLS FFmpeg started: ${commandLine}`);
+        if (io) {
+          io.emit('camera:status', {
+            cameraId,
+            status: 'online',
+            streamType: 'hls',
+            hlsUrl: `/hls/camera_${cameraId}/playlist.m3u8`
+          });
+        }
+      })
+      .on('error', (err, stdout, stderr) => {
+        console.error(`HLS stream error for camera ${cameraId}:`, err.message);
+        console.error('FFmpeg stderr:', stderr);
+
+        this.hlsStreams.delete(cameraId);
+
+        if (io) {
+          io.emit('camera:status', {
+            cameraId,
+            status: 'offline',
+            streamType: 'hls',
+            error: err.message
+          });
+        }
+
+        // Retry after 5 seconds
+        setTimeout(() => {
+          console.log(`Retrying HLS stream for camera ${cameraId}`);
+          this.startHLSStream(streamUrl, cameraId, io);
+        }, 5000);
+      })
+      .on('end', () => {
+        console.log(`HLS stream ended for camera ${cameraId}`);
+        this.hlsStreams.delete(cameraId);
+      });
+
+    stream.run();
+    this.hlsStreams.set(cameraId, stream);
+  }
+
+  /**
+   * Stop HLS stream
+   * @param {string} cameraId - Camera ID
+   */
+  stopHLSStream(cameraId) {
+    const stream = this.hlsStreams.get(cameraId);
+    if (stream) {
+      stream.kill('SIGKILL');
+      this.hlsStreams.delete(cameraId);
+      console.log(`HLS stream stopped for camera ${cameraId}`);
     }
   }
 }

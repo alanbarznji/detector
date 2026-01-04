@@ -5,6 +5,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { AlertItem } from '../components/AlertItem';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { HLSPlayer } from '../components/HLSPlayer';
 import { useAppSelector, useAppDispatch } from '../hooks/useRedux';
 import { resolveAlert } from '../store/slices/alertSlice';
 import { useCameraStream } from '../hooks/useCameraStream';
@@ -37,7 +38,7 @@ export const CameraView = () => {
     state.alerts.items.filter(a => a.sourceId === id)
   );
 
-  const { isLoading, currentFrame } = useCameraStream(camera);
+  const { isLoading, currentFrame, hlsUrl, isHLS } = useCameraStream(camera);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -118,6 +119,87 @@ export const CameraView = () => {
               <Video className="w-20 h-20 mb-4" />
               <span className="text-xl">الكاميرا غير متصلة</span>
             </div>
+          ) : isHLS && hlsUrl ? (
+            <>
+              <HLSPlayer
+                hlsUrl={hlsUrl}
+                camera={camera}
+                className="w-full h-full"
+                autoPlay={isPlaying}
+                muted={false}
+                controls={false}
+              />
+
+              {/* Live Indicator */}
+              {camera.status === 'online' && isPlaying && (
+                <div className="absolute top-4 right-4">
+                  <div className="flex items-center gap-2 bg-danger-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                    LIVE
+                  </div>
+                </div>
+              )}
+
+              {/* Detection Active */}
+              {camera.isDetectionActive && (
+                <div className="absolute top-4 left-4">
+                  <div className="flex items-center gap-2 bg-black/70 text-white px-4 py-2 rounded-lg text-sm backdrop-blur-sm">
+                    <Eye className="w-4 h-4 text-green-400" />
+                    <span>الكشف نشط</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Active Alerts Overlay */}
+              {activeAlerts.length > 0 && (
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="bg-danger-600/90 backdrop-blur-sm text-white px-4 py-3 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5" />
+                      <span className="font-bold">{activeAlerts.length} تنبيه نشط</span>
+                    </div>
+                    <div className="mt-2 space-y-1">
+                      {activeAlerts.slice(0, 3).map(alert => (
+                        <div key={alert.id} className="text-sm flex items-center gap-2">
+                          {alert.type === 'fire' && <Flame className="w-4 h-4" />}
+                          {alert.type === 'smoke' && <Cloud className="w-4 h-4" />}
+                          {alert.type === 'ppe_violation' && <Shield className="w-4 h-4" />}
+                          <span>{alert.description}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Controls Overlay */}
+              <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  onClick={() => setIsPlaying(!isPlaying)}
+                >
+                  {isPlaying ? 'إيقاف' : 'تشغيل'}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={<Download className="w-4 h-4" />}
+                  onClick={handleSnapshot}
+                >
+                  لقطة
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={<Maximize2 className="w-4 h-4" />}
+                  onClick={handleToggleFullscreen}
+                >
+                  {isFullscreen ? 'خروج' : 'ملء الشاشة'}
+                </Button>
+              </div>
+            </>
           ) : (
             <>
               <img

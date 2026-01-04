@@ -33,6 +33,9 @@ app.use(express.urlencoded({ extended: true }));
 // Static files for uploads
 app.use('/uploads', express.static('uploads'));
 
+// Static files for HLS streams
+app.use('/hls', express.static('public/hls'));
+
 // Routes
 app.use('/api/cameras', cameraRoutes);
 app.use('/api/alerts', alertRoutes);

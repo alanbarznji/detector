@@ -5,12 +5,14 @@ export const useCameraStream = (camera) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [liveFrame, setLiveFrame] = useState(null);
+  const [hlsUrl, setHlsUrl] = useState(null);
 
   useEffect(() => {
     if (!camera || camera.status === 'offline') {
       setIsLoading(false);
       setError('الكاميرا غير متصلة');
       setLiveFrame(null);
+      setHlsUrl(null);
       return;
     }
 
@@ -38,6 +40,12 @@ export const useCameraStream = (camera) => {
         if (data.status === 'offline') {
           setError('الكاميرا غير متصلة');
           setLiveFrame(null);
+          setHlsUrl(null);
+        } else if (data.status === 'online' && data.streamType === 'hls' && data.hlsUrl) {
+          // HLS stream is available
+          const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+          setHlsUrl(`${backendUrl}${data.hlsUrl}`);
+          setIsLoading(false);
         }
       }
     };
@@ -63,6 +71,10 @@ export const useCameraStream = (camera) => {
     isLoading,
     error,
     // إرجاع الإطار المباشر إذا موجود، وإلا الصورة الثابتة
-    currentFrame: liveFrame || camera?.lastFrame
+    currentFrame: liveFrame || camera?.lastFrame,
+    // HLS URL if available
+    hlsUrl,
+    // Check if HLS is available
+    isHLS: !!hlsUrl
   };
 };

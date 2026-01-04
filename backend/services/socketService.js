@@ -1,3 +1,8 @@
+import { streamProcessor } from './streamProcessor.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 let io;
 
 /**
@@ -32,11 +37,23 @@ export function setupSocketIO(socketIO) {
     socket.on('detection:subscribe', (data) => {
       console.log(`Client subscribed to detections: ${data.cameraId || 'all'}`);
       socket.join(`detections:${data.cameraId || 'all'}`);
+
+      // Start HLS stream for this camera if not already running
+      if (data.cameraId && data.cameraId !== 'all') {
+        const rtspUrl = process.env.RTSP_URL;
+        if (rtspUrl && !streamProcessor.hlsStreams.has(data.cameraId)) {
+          console.log(`🎥 Starting HLS stream for camera: ${data.cameraId}`);
+          streamProcessor.startHLSStream(rtspUrl, data.cameraId, io);
+        }
+      }
     });
 
     socket.on('detection:unsubscribe', (data) => {
       console.log(`Client unsubscribed from detections: ${data.cameraId || 'all'}`);
       socket.leave(`detections:${data.cameraId || 'all'}`);
+
+      // Optional: Stop HLS stream if no more clients are subscribed
+      // For now, we'll keep streams running for performance
     });
 
     // Handle sensor data

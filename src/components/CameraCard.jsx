@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
 import { LoadingSpinner } from './ui/LoadingSpinner';
+import { HLSPlayer } from './HLSPlayer';
 import { useCameraStream } from '../hooks/useCameraStream';
 import { getCameraStatusColor, getDetectionTypeLabel, getDetectionTypeBadgeColor } from '../utils/helpers';
 import { Video, VideoOff, AlertTriangle, Flame, Cloud, Eye } from 'lucide-react';
@@ -11,7 +12,7 @@ export const CameraCard = ({
   onClick,
   showControls = false,
 }) => {
-  const { isLoading, currentFrame } = useCameraStream(camera);
+  const { isLoading, currentFrame, hlsUrl, isHLS } = useCameraStream(camera);
   const activeAlerts = camera.alerts.filter(a => !a.resolved);
 
   const getStatusBadge = () => {
@@ -56,6 +57,15 @@ export const CameraCard = ({
               <VideoOff className="w-12 h-12 mb-2" />
               <span className="text-sm">غير متصل</span>
             </div>
+          ) : isHLS && hlsUrl ? (
+            <HLSPlayer
+              hlsUrl={hlsUrl}
+              camera={camera}
+              className="w-full h-full"
+              autoPlay={true}
+              muted={true}
+              controls={false}
+            />
           ) : (
             <img
               src={currentFrame}
